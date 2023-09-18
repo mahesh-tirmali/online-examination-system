@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\support\Facades\Hash;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -28,5 +29,37 @@ class AuthController extends Controller
         $user->save();
 
         return back()->with("success","Your registration has been successfull.");
+    }
+
+    public function loadLogin(){
+        return view("login");
+    }
+
+    public function userLogin(Request $request){
+        $request->validate([
+            "email" => "string|required|email",
+            "password" => "string|required"
+        ]);
+
+        $userCredential = $request->only("email","password");
+
+        if (Auth::attempt($userCredential)) {
+           if(Auth::user()->is_admin == 1){
+                return redirect('/admin/dashboard');
+           }else{
+            return redirect('/dashboard');
+           }
+        } else {
+           return back()->with("error","Email and Password is incorrect.");
+        }
+        
+    }
+
+    public function studentDashboard(){
+        return view('student.dashboard');
+    }
+
+    public function adminDashboard(){
+        return view('admin.dashboard');
     }
 }
