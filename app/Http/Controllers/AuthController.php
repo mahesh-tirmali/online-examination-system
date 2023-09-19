@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Session;
 class AuthController extends Controller
 {
     public function loadRegister(){
+        if (Auth::user() && Auth::user()->is_admin == 1) {
+            return redirect('/admin/dashboard');
+        } else if(Auth::user() && Auth::user()->is_admin == 0) {
+            return redirect('/dashboard');
+        }
         return view("register");
     }
 
@@ -32,6 +37,12 @@ class AuthController extends Controller
     }
 
     public function loadLogin(){
+        if (Auth::user() && Auth::user()->is_admin == 1) {
+            return redirect('/admin/dashboard');
+        } else if(Auth::user() && Auth::user()->is_admin == 0) {
+            return redirect('/dashboard');
+        }
+        
         return view("login");
     }
 
@@ -61,5 +72,11 @@ class AuthController extends Controller
 
     public function adminDashboard(){
         return view('admin.dashboard');
+    }
+
+    public function logout(Request $request){
+        $request->session()->flush();
+        Auth::logout();
+        return redirect('/');
     }
 }
