@@ -7,7 +7,7 @@
     <title>Online Examination System</title>
 </head>
 <body>
-    @yield('space-work');
+    @yield('space-work')
 </body>
 
 </html>
